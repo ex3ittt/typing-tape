@@ -1,0 +1,158 @@
+/* A teleprinter tape running across a slate desk. The tape is the only
+   light thing on the page; yellow marks "now", red marks "wrong". */
+:root {
+  --desk: #1f2630;
+  --desk-2: #27303b;
+  --cap: #2d3744;
+  --cap-edge: #222a35;
+  --legend: #c3cdd8;
+  --muted: #8b97a5;
+  --tape: #e8edf2;
+  --tape-ink: #1d232b;
+  --tape-done: #9aa6b3;
+  --now: #ffd166;
+  --wrong: #ff6b5e;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--desk); color: var(--legend); font: 16px/1.5 'IBM Plex Sans', system-ui, sans-serif; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+[hidden] { display: none !important; }
+
+.top, .lessons, .lesson-hint, .readout, .keyboard, .kb-caption, .foot { max-width: 1000px; margin-inline: auto; padding-inline: 24px; }
+.top { padding-top: 28px; display: flex; align-items: baseline; gap: 6px 22px; flex-wrap: wrap; }
+h1 { margin: 0; color: #fff; font: 700 34px/1 'IBM Plex Sans', sans-serif; letter-spacing: -0.02em; }
+.lead { margin: 0; color: var(--muted); }
+
+/* ── lessons ─────────────────────────────────────────────────────────── */
+
+.lessons { display: flex; gap: 4px; flex-wrap: wrap; padding-top: 22px; }
+.lessons button {
+  font: 500 14px var(--mono);
+  color: var(--legend);
+  background: var(--desk-2);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  min-width: 40px;
+  min-height: 36px;
+  padding: 0 9px;
+  cursor: pointer;
+}
+.lessons button:hover { border-color: var(--muted); }
+.lessons button[aria-current='true'] { background: var(--tape); color: var(--tape-ink); }
+.lessons button.done::after { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--now); margin-left: 5px; vertical-align: 2px; }
+.lessons .free { font-family: 'IBM Plex Sans', sans-serif; }
+.lesson-hint { margin: 10px auto 0; color: var(--muted); min-height: 1.5em; }
+.lesson-hint b { color: #fff; font-weight: 600; }
+
+/* ── the tape ────────────────────────────────────────────────────────── */
+
+.tape-wrap { position: relative; margin: 26px 0 0; outline: none; }
+.tape {
+  position: relative;
+  height: 104px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle, var(--desk) 2.4px, transparent 2.6px) 0 9px / 14px 14px repeat-x,
+    var(--tape);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.4) inset, 0 12px 30px -16px rgb(0 0 0 / 0.6);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.tape-wrap:focus-visible .tape { box-shadow: 0 0 0 3px var(--now), 0 12px 30px -16px rgb(0 0 0 / 0.6); }
+
+.track {
+  position: absolute;
+  top: 34px;
+  left: 40%;
+  white-space: pre;
+  font: 500 40px/1 var(--mono);
+  color: var(--tape-ink);
+  transition: translate 90ms linear;
+  will-change: translate;
+}
+.track span.done { color: var(--tape-done); }
+.track span.done.had-error { color: color-mix(in srgb, var(--wrong) 70%, var(--tape-done)); }
+.track span.now { box-shadow: 0 5px 0 -1px var(--now); background: color-mix(in srgb, var(--now) 30%, transparent); }
+.track span.now.wrong { background: color-mix(in srgb, var(--wrong) 35%, transparent); box-shadow: 0 5px 0 -1px var(--wrong); animation: nudge 120ms; }
+.track span.space.now::before { content: '·'; color: var(--tape-done); position: absolute; translate: 0.15em 0; }
+
+@keyframes nudge {
+  25% { translate: -2px 0; }
+  75% { translate: 2px 0; }
+}
+
+.result {
+  max-width: 1000px;
+  margin: 16px auto 0;
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 24px;
+  border-left: 4px solid var(--now);
+  background: var(--desk-2);
+}
+.result-actions { grid-column: 2; grid-row: 1 / span 2; }
+.tape-wrap:has(.result:not([hidden])) .tape { opacity: 0.55; }
+.result-line { margin: 0; color: #fff; font: 600 22px/1.3 'IBM Plex Sans', sans-serif; }
+.result-note { margin: 0; color: var(--legend); }
+.result-actions { display: flex; gap: 8px; }
+.result button { font: 600 15px 'IBM Plex Sans', sans-serif; border-radius: 8px; padding: 0 18px; min-height: 42px; border: 1px solid var(--muted); background: none; color: #fff; cursor: pointer; }
+.result button.primary { background: var(--now); border-color: var(--now); color: var(--tape-ink); }
+button:focus-visible { outline: 2px solid var(--now); outline-offset: 2px; }
+
+/* ── readout ─────────────────────────────────────────────────────────── */
+
+.readout { padding-top: 18px; display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; font-variant-numeric: tabular-nums; }
+.readout p { margin: 0; }
+.readout span { color: var(--muted); }
+.readout b { color: #fff; font: 600 20px var(--mono); }
+.gap { display: inline-block; width: 18px; }
+.next-key { color: var(--muted); }
+.next-key b { font-size: 16px; color: var(--now); }
+.warning { flex-basis: 100%; color: var(--wrong); }
+
+/* ── keyboard ────────────────────────────────────────────────────────── */
+
+.keyboard { padding-top: 26px; display: grid; gap: 6px; }
+.krow { display: flex; gap: 6px; }
+.cap {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 50px;
+  border-radius: 7px;
+  background: var(--cap);
+  box-shadow: 0 3px 0 var(--cap-edge);
+  display: grid;
+  place-items: center;
+  font: 500 17px var(--mono);
+  color: var(--legend);
+  position: relative;
+  transition: background-color 120ms;
+}
+.cap.home::after { content: ''; position: absolute; bottom: 9px; width: 12px; height: 2px; border-radius: 1px; background: var(--muted); }
+.cap.wide { flex-grow: 1.6; font: 500 13px 'IBM Plex Sans', sans-serif; color: var(--muted); }
+.cap.space { flex-grow: 7; }
+.cap.target { background: var(--now); color: var(--tape-ink); box-shadow: 0 3px 0 #c9a043; }
+.cap.target.home::after { background: var(--tape-ink); }
+.cap.shift-target { outline: 2px solid var(--now); outline-offset: -2px; color: var(--now); }
+.kb-caption { color: var(--muted); font-size: 14px; margin-top: 14px; }
+.foot { color: var(--muted); font-size: 13px; padding-top: 22px; padding-bottom: 36px; }
+
+@media (max-width: 760px) {
+  .result { grid-template-columns: 1fr; margin-inline: 16px; }
+  .result-actions { grid-column: 1; grid-row: auto; margin-top: 8px; }
+  .top, .lessons, .lesson-hint, .readout, .keyboard, .kb-caption, .foot { padding-inline: 16px; }
+  .track { font-size: 30px; top: 38px; }
+  .cap { height: 38px; font-size: 13px; }
+  .krow { gap: 3px; }
+  .keyboard { gap: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track { transition: none; }
+  .track span.now.wrong { animation: none; }
+}

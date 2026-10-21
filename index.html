@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Тренажёр слепой печати на русской раскладке: уроки по рядам клавиатуры, скорость в знаках в минуту и карта ошибок." />
+    <title>Лента — слепая печать</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231f2630'/%3E%3Crect x='1' y='5' width='14' height='6' fill='%23e8edf2'/%3E%3Crect x='7' y='6.5' width='2' height='3' fill='%23ffd166'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <header class="top">
+      <h1>Лента</h1>
+      <p class="lead">Слепая печать на русской раскладке. Смотри на ленту, а не на руки.</p>
+    </header>
+
+    <nav class="lessons" id="lessons" aria-label="Уроки"></nav>
+    <p class="lesson-hint" id="lesson-hint"></p>
+
+    <main class="tape-wrap" id="tape-wrap" tabindex="0" aria-label="Лента: печатай текст">
+      <div class="tape">
+        <div class="track" id="track" aria-hidden="true"></div>
+      </div>
+      <p class="sr" id="sr" aria-live="polite"></p>
+      <div class="result" id="result" hidden>
+        <p class="result-line" id="result-line"></p>
+        <p class="result-note" id="result-note"></p>
+        <div class="result-actions">
+          <button id="again">Ещё раз</button>
+          <button id="next" class="primary">Следующий урок</button>
+        </div>
+      </div>
+    </main>
+
+    <section class="readout">
+      <p id="live"><span>Скорость</span> <b id="cpm">0</b> зн/мин <span class="gap"></span> <span>Точность</span> <b id="acc">100</b>&nbsp;% <span class="gap"></span> <span>Ошибок</span> <b id="err">0</b></p>
+      <p id="next-key" class="next-key"></p>
+      <p id="layout-warning" class="warning" hidden>Похоже, включена английская раскладка — переключи на русскую.</p>
+    </section>
+
+    <section class="keyboard" id="keyboard" aria-hidden="true"></section>
+    <p class="kb-caption" id="kb-caption">Подсвечена клавиша, которую нажимать сейчас. После урока клавиатура покажет, где были ошибки.</p>
+
+    <footer class="foot">Esc — начать заново. Ошибка не сдвигает ленту: нажми правильную клавишу.</footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
